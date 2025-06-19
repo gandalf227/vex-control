@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Panel Administrativo - Club VEX</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="p-4">
+    <h2>Panel Administrativo - Karla</h2>
+
+    <form method="get" class="row g-3 mb-4">
+        <div class="col-auto">
+            <label class="form-label">Filtrar por matrícula:</label>
+            <input type="text" name="matricula" class="form-control" value="{{ matricula_filter }}">
+        </div>
+
+        <div class="col-auto">
+            <label class="form-label">Fecha inicio:</label>
+            <input type="date" name="fecha_inicio" class="form-control" value="{{ fecha_inicio }}">
+        </div>
+
+        <div class="col-auto">
+            <label class="form-label">Fecha fin:</label>
+            <input type="date" name="fecha_fin" class="form-control" value="{{ fecha_fin }}">
+        </div>
+
+        <div class="col-auto align-self-end">
+            <button type="submit" class="btn btn-primary">Filtrar</button>
+        </div>
+    </form>
+
+    <table class="table table-bordered table-striped">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Matrícula</th>
+            <th>Hora Entrada</th>
+            <th>Hora Salida</th>
+            <th>Duración (hrs)</th>
+        </tr>
+        </thead>
+        <tbody>
+            {% for r in registros %}
+            <tr>
+                <td>{{ r['id'] }}</td>
+                <td>{{ r['matricula'] }}</td>
+                <td>{{ r['hora_entrada'] }}</td>
+                <td>{{ r['hora_salida'] or 'No registrado' }}</td>
+                <td>{{ r['duracion'] }}</td>
+            </tr>
+            {% else %}
+            <tr><td colspan="5" class="text-center">No hay registros</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Paginación -->
+    <nav aria-label="Paginación">
+      <ul class="pagination justify-content-center">
+        {% if pagina > 1 %}
+        <li class="page-item">
+          <a class="page-link" href="{{ url_for('admin_panel', page=pagina-1, matricula=matricula_filter, fecha_inicio=fecha_inicio, fecha_fin=fecha_fin) }}">Anterior</a>
+        </li>
+        {% endif %}
+
+        {% for p in range(1, total_paginas + 1) %}
+        <li class="page-item {% if p == pagina %}active{% endif %}">
+          <a class="page-link" href="{{ url_for('admin_panel', page=p, matricula=matricula_filter, fecha_inicio=fecha_inicio, fecha_fin=fecha_fin) }}">{{ p }}</a>
+        </li>
+        {% endfor %}
+
+        {% if pagina < total_paginas %}
+        <li class="page-item">
+          <a class="page-link" href="{{ url_for('admin_panel', page=pagina+1, matricula=matricula_filter, fecha_inicio=fecha_inicio, fecha_fin=fecha_fin) }}">Siguiente</a>
+        </li>
+        {% endif %}
+      </ul>
+    </nav>
+
+    <form method="get" action="{{ url_for('exportar_excel') }}" class="mb-3">
+        <input type="hidden" name="matricula" value="{{ matricula_filter }}">
+        <input type="hidden" name="fecha_inicio" value="{{ fecha_inicio }}">
+        <input type="hidden" name="fecha_fin" value="{{ fecha_fin }}">
+        <button type="submit" class="btn btn-success">Exportar a Excel</button>
+    </form>
+
+    <p><a href="{{ url_for('listar_miembros') }}">Gestión completa de Miembros</a></p>
+    <p><a href="{{ url_for('dashboard') }}">Volver al dashboard</a></p>
+    <p><a href="{{ url_for('logout') }}">Cerrar sesión</a></p>
+</body>
+</html>

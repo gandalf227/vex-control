@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - VEX Club</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+
+            <div class="card shadow rounded-4">
+                <div class="card-body text-center">
+                    <h2 class="card-title mb-4">Bienvenido, {{ matricula }}</h2>
+
+                    {% if mensaje %}
+                        <div class="alert alert-info alert-dismissible fade show" role="alert">
+                            {{ mensaje }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+                        </div>
+                    {% endif %}
+
+                    {% if puede_entrar %}
+                        <form method="post">
+                            <button type="submit" name="accion" value="entrada" class="btn btn-success btn-lg w-100">
+                                Registrar Entrada
+                            </button>
+                        </form>
+                    {% elif puede_salir %}
+                        <form method="post">
+                            <button type="submit" name="accion" value="salida" class="btn btn-danger btn-lg w-100">
+                                Registrar Salida
+                            </button>
+                        </form>
+                    {% else %}
+                        <div class="alert alert-secondary mt-4" role="alert">
+                            Actualmente no puedes registrar entrada o salida.
+                        </div>
+                    {% endif %}
+
+                    <div class="mt-4">
+                        <a href="{{ url_for('logout') }}" class="btn btn-outline-dark">Cerrar sesión</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
