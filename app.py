@@ -231,13 +231,24 @@ def eliminar_miembro(matricula):
     return redirect(url_for('listar_miembros'))
 
 def cerrar_sesiones_abiertas_3_horas():
-    registros_abiertos = obtener_registros_abiertos()  # Esto viene de db.py
+    registros_abiertos = obtener_registros_abiertos()
     ahora = datetime.now()
 
     for registro in registros_abiertos:
-        hora_entrada = datetime.strptime(registro['hora_entrada'], '%Y-%m-%d %H:%M:%S')
+        hora_entrada = registro['hora_entrada']
+
+        # Convertir string a datetime de forma segura
+        if isinstance(hora_entrada, str):
+            try:
+                hora_entrada = datetime.fromisoformat(hora_entrada)
+            except ValueError:
+                flash(f"Error al convertir hora: {hora_entrada}", "danger")
+                continue
+
+        # Si han pasado más de 3 horas, se cierra la sesión
         if ahora - hora_entrada > timedelta(hours=3):
             actualizar_salida(registro['id'])
+
 
 
 
